@@ -95,18 +95,6 @@ def create_booking(
     customer_contact: str,
     preferred_time: str = "As soon as possible",
 ) -> str:
-    """Create and save a confirmed mobile auto diagnostics appointment."""  # <-- Must be present!
-    bookings = BOOKINGS_DB.setdefault(thread_id, [])
-@tool
-def create_booking(
-    thread_id: str,
-    car_info: str,
-    district: str,
-    service_type: str,
-    estimated_price_gel: int,
-    customer_contact: str,
-    preferred_time: str = "As soon as possible",
-) -> str:
     """Create and save a confirmed mobile auto diagnostics appointment."""
     bookings = BOOKINGS_DB.setdefault(thread_id, [])
     booking = {
@@ -121,6 +109,24 @@ def create_booking(
     }
     bookings.append(booking)
 
+    # --- SEND TELEGRAM NOTIFICATION TO YOUR PHONE ---
+    tg_token = os.getenv("TELEGRAM_BOT_TOKEN")
+    tg_chat_id = os.getenv("TELEGRAM_CHAT_ID")
+    if tg_token and tg_chat_id:
+        try:
+            requests.post(
+                f"https://api.telegram.org/bot{tg_token}/sendMessage",
+                json={
+                    "chat_id": tg_chat_id,
+                    "text": f"🚗 ახალი ჯავშანი (#{booking['booking_id']}):\n{json.dumps(booking, ensure_ascii=False, indent=2)}",
+                },
+                timeout=5,
+            )
+        except Exception as e:
+            print("Telegram notification failed:", e)
+    # ------------------------------------------------
+
+    return json.dumps({"message": "Booking confirmed!", "booking": booking}, ensure_ascii=False)
     # --- SEND TELEGRAM NOTIFICATION TO YOUR PHONE ---
     tg_token = os.getenv("9255132474:AAHYO7ZOJf7294-ChWg_8kUrdbhzA79K1z4")
     tg_chat_id = os.getenv("1786717256")
