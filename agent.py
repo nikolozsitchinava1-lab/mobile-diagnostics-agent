@@ -85,7 +85,7 @@ def calculate_callout_quote(district: str, service_type: str) -> dict:
     }
 
 # --- STATEFUL BOOKING TOOLS ---
-@tool@tool
+@tool
 def create_booking(
     thread_id: str,
     car_info: str,
