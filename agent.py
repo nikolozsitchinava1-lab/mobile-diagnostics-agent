@@ -85,7 +85,18 @@ def calculate_callout_quote(district: str, service_type: str) -> dict:
     }
 
 # --- STATEFUL BOOKING TOOLS ---
-@tool
+@tool@tool
+def create_booking(
+    thread_id: str,
+    car_info: str,
+    district: str,
+    service_type: str,
+    estimated_price_gel: int,
+    customer_contact: str,
+    preferred_time: str = "As soon as possible",
+) -> str:
+    """Create and save a confirmed mobile auto diagnostics appointment."""  # <-- Must be present!
+    bookings = BOOKINGS_DB.setdefault(thread_id, [])
 @tool
 def create_booking(
     thread_id: str,
