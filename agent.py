@@ -112,9 +112,11 @@ def create_booking(
     # --- SEND TELEGRAM NOTIFICATION TO YOUR PHONE ---
     tg_token = os.getenv("TELEGRAM_BOT_TOKEN")
     tg_chat_id = os.getenv("TELEGRAM_CHAT_ID")
+    print("TELEGRAM DEBUG -> token set:", bool(tg_token), "chat_id:", tg_chat_id)
+
     if tg_token and tg_chat_id:
         try:
-            requests.post(
+            resp = requests.post(
                 f"https://api.telegram.org/bot{tg_token}/sendMessage",
                 json={
                     "chat_id": tg_chat_id,
@@ -122,8 +124,9 @@ def create_booking(
                 },
                 timeout=5,
             )
+            print("TELEGRAM RESPONSE:", resp.status_code, resp.text)
         except Exception as e:
-            print("Telegram notification failed:", e)
+            print("TELEGRAM EXCEPTION:", e)
     # ------------------------------------------------
 
     return json.dumps({"message": "Booking confirmed!", "booking": booking}, ensure_ascii=False)
